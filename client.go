@@ -525,14 +525,23 @@ func (c *Client) stream(method, path string, streamOptions streamOptions) error 
 				return err
 			}
 			if m.Stream != "" {
-				fmt.Fprint(streamOptions.stdout, m.Stream)
+				_, err := fmt.Fprint(streamOptions.stdout, m.Stream)
+				if err != nil {
+					return err
+				}
 			} else if m.Progress != "" {
-				fmt.Fprintf(streamOptions.stdout, "%s %s\r", m.Status, m.Progress)
+				_, err := fmt.Fprintf(streamOptions.stdout, "%s %s\r", m.Status, m.Progress)
+				if err != nil {
+					return err
+				}
 			} else if m.Error != "" {
 				return errors.New(m.Error)
 			}
 			if m.Status != "" {
-				fmt.Fprintln(streamOptions.stdout, m.Status)
+				_, err := fmt.Fprintln(streamOptions.stdout, m.Status)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	} else {
